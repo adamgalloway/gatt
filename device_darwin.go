@@ -391,18 +391,18 @@ func (d *device) HandleXpcEvent(event xpc.Dict, err error) {
 
 	switch id {
 	case // device event
-		6,  // StateChanged
-		16, // AdvertisingStarted
-		17, // AdvertisingStopped
-		18: // ServiceAdded
+		4, //6,  // StateChanged
+		27, //16, // AdvertisingStarted
+		28, //17, // AdvertisingStopped
+		29: //18: // ServiceAdded
 		d.rspc <- message{id: id, args: args}
 
 	case
-		19, // ReadRequest
-		20, // WriteRequest
-		21, // Subscribe
-		22, // Unubscribe
-		23: // Confirmation
+		30, // 19, // ReadRequest
+		31, // 20, // WriteRequest
+		32, // 21, // Subscribe
+		33, // 22, // Unubscribe
+		34: // 23: // Confirmation
 		d.respondToRequest(id, args)
 
 	case peripheralDiscovered:
