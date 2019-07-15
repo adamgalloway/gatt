@@ -13,20 +13,34 @@ import (
 )
 
 const (
-	peripheralDiscovered   = 37
-	peripheralConnected    = 38
-	peripheralDisconnected = 40
+	// peripheralDiscovered   = 37
+	// peripheralConnected    = 38
+	// peripheralDisconnected = 40
 	// below constants for Yosemite
-	rssiRead                   = 55
-	includedServicesDiscovered = 63
-	serviceDiscovered          = 56
-	characteristicsDiscovered  = 64
-	characteristicRead         = 71
-	characteristicWritten      = 72
-	notificationValueSet       = 74
-	descriptorsDiscovered      = 76
-	descriptorRead             = 79
-	descriptorWritten          = 80
+	// rssiRead                   = 55
+	// includedServicesDiscovered = 63
+	// serviceDiscovered          = 56
+	// characteristicsDiscovered  = 64
+	// characteristicRead         = 71
+	// characteristicWritten      = 72
+	// notificationValueSet       = 74
+	// descriptorsDiscovered      = 76
+	// descriptorRead             = 79
+	// descriptorWritten          = 80
+	peripheralDiscovered   = 48
+	peripheralConnected    = 49
+	peripheralDisconnected = 50
+	// below constants for high sierra
+	rssiRead                   = 71
+	includedServicesDiscovered = 76
+	serviceDiscovered          = 72
+	characteristicsDiscovered  = 77
+	characteristicRead         = 83
+	characteristicWritten      = 84
+	notificationValueSet       = 86
+	descriptorsDiscovered      = 87
+	descriptorRead             = 90
+	descriptorWritten          = 91
 )
 
 type device struct {
