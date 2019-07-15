@@ -36,7 +36,7 @@ func (p *peripheral) Name() string         { return p.name }
 func (p *peripheral) Services() []*Service { return p.svcs }
 
 func (p *peripheral) DiscoverServices(ss []UUID) ([]*Service, error) {
-	rsp := p.sendReq(45, xpc.Dict{
+	rsp := p.sendReq(62, xpc.Dict{
 		"kCBMsgArgDeviceUUID": p.id,
 		"kCBMsgArgUUIDs":      uuidSlice(ss),
 	})
@@ -56,7 +56,7 @@ func (p *peripheral) DiscoverServices(ss []UUID) ([]*Service, error) {
 }
 
 func (p *peripheral) DiscoverIncludedServices(ss []UUID, s *Service) ([]*Service, error) {
-	rsp := p.sendReq(60, xpc.Dict{
+	rsp := p.sendReq(74, xpc.Dict{
 		"kCBMsgArgDeviceUUID":         p.id,
 		"kCBMsgArgServiceStartHandle": s.h,
 		"kCBMsgArgServiceEndHandle":   s.endh,
@@ -70,7 +70,7 @@ func (p *peripheral) DiscoverIncludedServices(ss []UUID, s *Service) ([]*Service
 }
 
 func (p *peripheral) DiscoverCharacteristics(cs []UUID, s *Service) ([]*Characteristic, error) {
-	rsp := p.sendReq(62, xpc.Dict{
+	rsp := p.sendReq(75, xpc.Dict{
 		"kCBMsgArgDeviceUUID":         p.id,
 		"kCBMsgArgServiceStartHandle": s.h,
 		"kCBMsgArgServiceEndHandle":   s.endh,
@@ -92,7 +92,7 @@ func (p *peripheral) DiscoverCharacteristics(cs []UUID, s *Service) ([]*Characte
 }
 
 func (p *peripheral) DiscoverDescriptors(ds []UUID, c *Characteristic) ([]*Descriptor, error) {
-	rsp := p.sendReq(70, xpc.Dict{
+	rsp := p.sendReq(82, xpc.Dict{
 		"kCBMsgArgDeviceUUID":                p.id,
 		"kCBMsgArgCharacteristicHandle":      c.h,
 		"kCBMsgArgCharacteristicValueHandle": c.vh,
@@ -109,7 +109,7 @@ func (p *peripheral) DiscoverDescriptors(ds []UUID, c *Characteristic) ([]*Descr
 }
 
 func (p *peripheral) ReadCharacteristic(c *Characteristic) ([]byte, error) {
-	rsp := p.sendReq(65, xpc.Dict{
+	rsp := p.sendReq(78, xpc.Dict{
 		"kCBMsgArgDeviceUUID":                p.id,
 		"kCBMsgArgCharacteristicHandle":      c.h,
 		"kCBMsgArgCharacteristicValueHandle": c.vh,
@@ -134,10 +134,10 @@ func (p *peripheral) WriteCharacteristic(c *Characteristic, b []byte, noRsp bool
 		"kCBMsgArgType":                      map[bool]int{false: 0, true: 1}[noRsp],
 	}
 	if noRsp {
-		p.sendCmd(66, args)
+		p.sendCmd(79, args)
 		return nil
 	}
-	rsp := p.sendReq(65, args)
+	rsp := p.sendReq(78, args)
 	if res := rsp.MustGetInt("kCBMsgArgResult"); res != 0 {
 		return attEcode(res)
 	}
@@ -145,7 +145,7 @@ func (p *peripheral) WriteCharacteristic(c *Characteristic, b []byte, noRsp bool
 }
 
 func (p *peripheral) ReadDescriptor(d *Descriptor) ([]byte, error) {
-	rsp := p.sendReq(77, xpc.Dict{
+	rsp := p.sendReq(88, xpc.Dict{
 		"kCBMsgArgDeviceUUID":       p.id,
 		"kCBMsgArgDescriptorHandle": d.h,
 	})
@@ -157,7 +157,7 @@ func (p *peripheral) ReadDescriptor(d *Descriptor) ([]byte, error) {
 }
 
 func (p *peripheral) WriteDescriptor(d *Descriptor, b []byte) error {
-	rsp := p.sendReq(78, xpc.Dict{
+	rsp := p.sendReq(89, xpc.Dict{
 		"kCBMsgArgDeviceUUID":       p.id,
 		"kCBMsgArgDescriptorHandle": d.h,
 		"kCBMsgArgData":             b,
@@ -178,7 +178,7 @@ func (p *peripheral) SetNotifyValue(c *Characteristic, f func(*Characteristic, [
 		// Note: when notified, core bluetooth reports characteristic handle, not value's handle.
 		p.sub.subscribe(c.h, func(b []byte, err error) { f(c, b, err) })
 	}
-	rsp := p.sendReq(68, xpc.Dict{
+	rsp := p.sendReq(81, xpc.Dict{
 		"kCBMsgArgDeviceUUID":                p.id,
 		"kCBMsgArgCharacteristicHandle":      c.h,
 		"kCBMsgArgCharacteristicValueHandle": c.vh,
@@ -201,7 +201,7 @@ func (p *peripheral) SetIndicateValue(c *Characteristic,
 }
 
 func (p *peripheral) ReadRSSI() int {
-	rsp := p.sendReq(43, xpc.Dict{"kCBMsgArgDeviceUUID": p.id})
+	rsp := p.sendReq(61, xpc.Dict{"kCBMsgArgDeviceUUID": p.id})
 	return rsp.MustGetInt("kCBMsgArgData")
 }
 
@@ -256,7 +256,7 @@ func (p *peripheral) loop() {
 		select {
 		case rsp := <-p.rspc:
 			// Notification
-			if rsp.id == 71 && rsp.args.GetInt("kCBMsgArgIsNotification", 0) != 0 {
+			if rsp.id == 83 && rsp.args.GetInt("kCBMsgArgIsNotification", 0) != 0 {
 				// While we're notified with the value's handle, blued reports the characteristic handle.
 				ch := uint16(rsp.args.MustGetInt("kCBMsgArgCharacteristicHandle"))
 				b := rsp.args.MustGetBytes("kCBMsgArgData")
