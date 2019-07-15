@@ -31,7 +31,7 @@ func (c *central) MTU() int     { return c.mtu }
 func (c *central) sendNotification(a *attr, b []byte) (int, error) {
 	data := make([]byte, len(b))
 	copy(data, b) // have to make a copy, why?
-	c.dev.sendCmd(15, xpc.Dict{
+	c.dev.sendCmd(22, xpc.Dict{
 		// "kCBMsgArgUUIDs": [][]byte{reverse(c.uuid.b)}, // connection interrupted
 		// "kCBMsgArgUUIDs": [][]byte{c.uuid.b}, // connection interrupted
 		// "kCBMsgArgUUIDs": []xpc.UUID{xpc.UUID(reverse(c.uuid.b))},
